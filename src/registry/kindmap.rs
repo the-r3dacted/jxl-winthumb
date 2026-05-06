@@ -1,5 +1,5 @@
-use winreg::RegKey;
 use winreg::enums::*;
+use winreg::RegKey;
 
 fn open_kindmap_key() -> std::io::Result<RegKey> {
     let hkcr = RegKey::predef(HKEY_LOCAL_MACHINE);

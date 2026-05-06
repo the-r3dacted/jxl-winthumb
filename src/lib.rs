@@ -7,7 +7,7 @@
 
 use jxl_oxide::{JxlImage, PixelFormat};
 use std::{cell::RefCell, io::BufReader, rc::Rc};
-use windows::core::{GUID, Interface, implement};
+use windows::core::{implement, Interface, GUID};
 
 mod registry;
 mod winstream;
@@ -17,7 +17,7 @@ use windows as Windows;
 use windows::Win32::{
     Foundation::*,
     Graphics::Imaging::*,
-    System::Com::{CLSCTX_INPROC_SERVER, CoCreateInstance, IStream},
+    System::Com::{CoCreateInstance, IStream, CLSCTX_INPROC_SERVER},
 };
 
 mod dll;

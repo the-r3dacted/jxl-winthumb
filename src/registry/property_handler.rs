@@ -1,10 +1,10 @@
-use winreg::RegKey;
 use winreg::enums::*;
+use winreg::RegKey;
 
 use crate::guid::guid_to_string;
 use crate::properties::JXLPropertyStore;
 
-use super::{EXT, register_clsid_base};
+use super::{register_clsid_base, EXT};
 
 const PROPERTY_HANDLERS_KEY: &str =
     "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\PropertySystem\\PropertyHandlers";

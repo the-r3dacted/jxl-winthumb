@@ -1,6 +1,7 @@
 use std::io::BufReader;
 
 use windows as Windows;
+use windows::core::{implement, Interface, GUID, HSTRING, PCWSTR, PROPVARIANT};
 use windows::Win32::{
     Foundation::*,
     System::Com::{
@@ -8,11 +9,10 @@ use windows::Win32::{
         StructuredStorage::{InitPropVariantFromStringVector, InitPropVariantFromUInt32Vector},
     },
     UI::Shell::PropertiesSystem::{
-        IInitializeWithStream_Impl, IPropertyStore_Impl, IPropertyStoreCache,
-        IPropertyStoreCapabilities_Impl, PROPERTYKEY, PSC_READONLY, PSCreateMemoryPropertyStore,
+        IInitializeWithStream_Impl, IPropertyStoreCache, IPropertyStoreCapabilities_Impl,
+        IPropertyStore_Impl, PSCreateMemoryPropertyStore, PROPERTYKEY, PSC_READONLY,
     },
 };
-use windows::core::{GUID, HSTRING, Interface, PCWSTR, PROPVARIANT, implement};
 
 use crate::winstream::WinStream;
 use jxl_oxide::JxlImage;
