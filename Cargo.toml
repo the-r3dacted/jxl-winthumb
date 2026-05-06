@@ -16,7 +16,7 @@ winreg = "0.52.0"
 jxl-oxide = "0.12.4"
 
 [dependencies.windows]
-version = "0.54.0"
+version = "0.53.0"
 features = [
   "implement",
   "Win32_Graphics_Imaging",
