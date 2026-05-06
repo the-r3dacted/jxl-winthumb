@@ -1,11 +1,12 @@
 use std::ffi::c_void;
 
 use crate::{
-    JXLWICBitmapDecoder,
     properties::JXLPropertyStore,
     registry::{register, unregister},
+    JXLWICBitmapDecoder,
 };
 use windows as Windows;
+use windows::core::{implement, IUnknown, Interface, GUID, HRESULT};
 use windows::Win32::{
     Foundation::*,
     System::Com::IClassFactory_Impl,
@@ -13,7 +14,6 @@ use windows::Win32::{
     System::SystemServices::DLL_PROCESS_ATTACH,
     UI::Shell::PropertiesSystem::{IInitializeWithStream, IPropertyStore},
 };
-use windows::core::{GUID, HRESULT, IUnknown, Interface, implement};
 
 static mut DLL_INSTANCE: HINSTANCE = HINSTANCE(std::ptr::null_mut());
 
@@ -59,15 +59,15 @@ impl IClassFactory_Impl for ClassFactory_Impl {
 }
 
 fn shell_change_notify() {
-    use windows::Win32::UI::Shell::{SHCNE_ASSOCCHANGED, SHCNF_IDLIST, SHChangeNotify};
+    use windows::Win32::UI::Shell::{SHChangeNotify, SHCNE_ASSOCCHANGED, SHCNF_IDLIST};
     unsafe { SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, None, None) };
 }
 
-#[unsafe(no_mangle)]
+#[no_mangle]
 #[allow(non_snake_case)]
 #[doc(hidden)]
 pub unsafe extern "system" fn DllRegisterServer() -> HRESULT {
-    let module_path = match get_module_path(unsafe { DLL_INSTANCE }) {
+    let module_path = match get_module_path(DLL_INSTANCE) {
         Ok(path) => path,
         Err(err) => return err,
     };
@@ -79,7 +79,7 @@ pub unsafe extern "system" fn DllRegisterServer() -> HRESULT {
     }
 }
 
-#[unsafe(no_mangle)]
+#[no_mangle]
 #[allow(non_snake_case)]
 #[doc(hidden)]
 pub unsafe extern "system" fn DllUnregisterServer() -> HRESULT {
@@ -91,7 +91,7 @@ pub unsafe extern "system" fn DllUnregisterServer() -> HRESULT {
     }
 }
 
-#[unsafe(no_mangle)]
+#[no_mangle]
 #[allow(non_snake_case)]
 #[doc(hidden)]
 pub extern "system" fn DllMain(
@@ -107,7 +107,7 @@ pub extern "system" fn DllMain(
     true
 }
 
-#[unsafe(no_mangle)]
+#[no_mangle]
 #[allow(non_snake_case)]
 #[doc(hidden)]
 pub unsafe extern "system" fn DllGetClassObject(
@@ -130,17 +130,15 @@ pub unsafe extern "system" fn DllGetClassObject(
             .unwrap();
     }
     log::trace!("DllGetClassObject");
-    if unsafe { *riid } != windows::Win32::System::Com::IClassFactory::IID {
+    if *riid != windows::Win32::System::Com::IClassFactory::IID {
         return E_UNEXPECTED;
     }
 
     let factory = ClassFactory {};
     let unknown: IUnknown = factory.into();
 
-    match unsafe { *rclsid } {
-        JXLWICBitmapDecoder::CLSID | JXLPropertyStore::CLSID => unsafe {
-            unknown.query(riid, pout)
-        },
+    match *rclsid {
+        JXLWICBitmapDecoder::CLSID | JXLPropertyStore::CLSID => unknown.query(riid, pout),
         _ => CLASS_E_CLASSNOTAVAILABLE,
     }
 }
