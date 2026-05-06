@@ -15,7 +15,7 @@ use windows::Win32::{
 };
 use windows::core::{GUID, HRESULT, IUnknown, Interface, implement};
 
-static mut DLL_INSTANCE: HINSTANCE = HINSTANCE(0);
+static mut DLL_INSTANCE: HINSTANCE = HINSTANCE(std::ptr::null_mut());
 
 fn get_module_path(instance: HINSTANCE) -> Result<String, HRESULT> {
     let mut path = [0u16; MAX_PATH as usize];
@@ -26,7 +26,7 @@ fn get_module_path(instance: HINSTANCE) -> Result<String, HRESULT> {
 #[implement(Windows::Win32::System::Com::IClassFactory)]
 struct ClassFactory {}
 
-impl IClassFactory_Impl for ClassFactory {
+impl IClassFactory_Impl for ClassFactory_Impl {
     fn CreateInstance(
         &self,
         outer: Option<&windows::core::IUnknown>,
