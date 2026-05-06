@@ -60,7 +60,7 @@ impl JXLWICBitmapDecoder {
     pub const CONTAINER_ID: GUID = GUID::from_u128(0x81e337bc_c1d1_4dee_a17c_402041ba9b5e);
 }
 
-impl IWICBitmapDecoder_Impl for JXLWICBitmapDecoder_Impl {
+impl IWICBitmapDecoder_Impl for JXLWICBitmapDecoder {
     fn QueryCapability(&self, _pistream: Option<&IStream>) -> windows::core::Result<u32> {
         log::trace!("QueryCapability");
         Ok((WICBitmapDecoderCapabilityCanDecodeSomeImages.0
@@ -104,7 +104,7 @@ impl IWICBitmapDecoder_Impl for JXLWICBitmapDecoder_Impl {
     fn GetContainerFormat(&self) -> windows::core::Result<GUID> {
         log::trace!("JXLWICBitmapDecoder::GetContainerFormat");
         // Randomly generated
-        Ok(JXLWICBitmapDecoder::CONTAINER_ID)
+        Ok(Self::CONTAINER_ID)
     }
 
     fn GetDecoderInfo(&self) -> windows::core::Result<IWICBitmapDecoderInfo> {
@@ -112,7 +112,7 @@ impl IWICBitmapDecoder_Impl for JXLWICBitmapDecoder_Impl {
         unsafe {
             let factory: IWICImagingFactory =
                 CoCreateInstance(&CLSID_WICImagingFactory, None, CLSCTX_INPROC_SERVER)?;
-            let component_info = factory.CreateComponentInfo(&JXLWICBitmapDecoder::CLSID)?;
+            let component_info = factory.CreateComponentInfo(&Self::CLSID)?;
             component_info.cast()
         }
     }
@@ -248,7 +248,7 @@ impl JXLWICBitmapFrameDecode {
 
 #[allow(non_snake_case)]
 #[allow(clippy::missing_safety_doc)]
-impl IWICBitmapSource_Impl for JXLWICBitmapFrameDecode_Impl {
+impl IWICBitmapSource_Impl for JXLWICBitmapFrameDecode {
     fn GetSize(&self, puiwidth: *mut u32, puiheight: *mut u32) -> windows::core::Result<()> {
         log::trace!(
             "JXLWICBitmapFrameDecode::GetSize {}x{}",
@@ -330,7 +330,7 @@ impl IWICBitmapSource_Impl for JXLWICBitmapFrameDecode_Impl {
     }
 }
 
-impl IWICBitmapFrameDecode_Impl for JXLWICBitmapFrameDecode_Impl {
+impl IWICBitmapFrameDecode_Impl for JXLWICBitmapFrameDecode {
     fn GetMetadataQueryReader(&self) -> windows::core::Result<IWICMetadataQueryReader> {
         log::trace!("JXLWICBitmapFrameDecode::GetMetadataQueryReader");
         Err(WINCODEC_ERR_UNSUPPORTEDOPERATION.into())
